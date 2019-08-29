@@ -7,7 +7,17 @@ const app = express();
 // Se conecta la base de datos  con la funcion  connectDB
 connectDB();
 
+// Inicializar Middleware Bodyparser
+
+app.use(express.json({ extended: false }));
+
 app.get("/", (req, res) => res.send("API Running"));
+
+// Definir rutas
+app.use("/api/users", require("./routes/api/users"));
+app.use("/api/auth", require("./routes/api/auth"));
+app.use("/api/profile", require("./routes/api/profile"));
+app.use("/api/posts", require("./routes/api/posts"));
 
 // Se crea la variable PORT que se encarga de escuchar si es que se esta en produccion o si no, la aplicacion se ejecuta
 // en el puerto 5000
