@@ -7,7 +7,7 @@ const db = config.get("mongoURI");
 const connectDB = async () => {
   try {
     // Como es una funcion async, se utiliza await para que se espera hasta que esta accion termine para poder continuar
-    await mongoose.connect(db, { useNewUrlParser: true });
+    await mongoose.connect(db, { useNewUrlParser: true, useCreateIndex: true });
     console.log("Mongo db Connected");
   } catch (err) {
     console.log(err.message);
