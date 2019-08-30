@@ -16,9 +16,10 @@ module.exports = function(req, res, next) {
     //   Se verifica el token con la llave "secreta" que se obtiene  desde  default.json
     const decoded = jwt.verify(token, config.get("jwtSecret"));
 
-    // despues se actualiza el usuario del request con el usuario decodificado
+    // despues se actualiza el usuario del request con el usuario decodificado, esto se utiliza en el archivo profile
+    // en donde se obtiene la informacion del usuario decodificada
     req.user = decoded.user;
-    // por ultimo se utiliza next, para poder seguir con el siguiente middleware o el siguiente paso
+    // por ultimo se utiliza next, para poder seguir con el siguiente middleware o el siguiente paso (Seguir con el flujo de datos)
     next();
   } catch (err) {
     res.status(401).json({ msg: "Token is not valid" });
