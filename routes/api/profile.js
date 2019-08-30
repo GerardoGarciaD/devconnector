@@ -12,11 +12,12 @@ const { check, validationResult } = require("express-validator");
 router.get("/me", auth, async (req, res) => {
   try {
     // Aqui se busca si es que existe el perfil del usuario que se manda como request, de que tambien se obtiene
-    // la informacion del nombre y el avatar del usuario con la funcion .populate
+    // la informacion del nombre y el avatar del usuario (mediante el modelo de datos User) con la funcion .populate
     const profile = await Profile.findOne({ user: req.user.id }).populate(
       "user",
       ["name", "avatar"]
     );
+    res.json(profile);
 
     if (!profile) {
       return res.status(400).json({ msg: "There is no profile for this user" });
@@ -125,5 +126,67 @@ router.post(
     }
   }
 );
+
+// @route   POST api/profile
+// @desc    Get all profiles
+// @access  Public
+
+router.get("/", async (req, res) => {
+  try {
+    // Se obtienen todos los perfiles
+    const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+
+    res.json(profiles);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   POST api/profile/user/:user_id
+// @desc    Get profile by user Id
+// @access  Public
+
+// : user_id es el parametro que se pone en la url para obtener el perfil del usuario
+router.get("/user/:user_id", async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      // Aqui se obtiene el parametro del url
+      user: req.params.user_id
+    }).populate("user", ["name", "avatar"]);
+
+    if (!profile) return res.status(400).json({ msg: "Profile not found" });
+
+    res.json(profile);
+  } catch (err) {
+    console.log(err.message);
+
+    if (err.kind == "ObjectId") {
+      return res.status(400).json({ msg: "Profile not found" });
+    }
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   DELETE api/profile
+// @desc    Delete profile, user & posts
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    // Elilminar post (por hacer)
+
+    // Eliminar perfil
+    await Profile.findOneAndRemove({ user: req.user.id });
+
+    // Eliminar usuario
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    res.json({ msg: "User deleted" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;
