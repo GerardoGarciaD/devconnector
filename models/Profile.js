@@ -3,8 +3,9 @@
 const mongoose = require("mongoose");
 
 const ProfileSchema = new mongoose.Schema({
+  // el objeto user hace referencia al modelo de datos user
   user: {
-    // Este es el id del objeto o el id unico de cada perfil del usuario
+    // Este es el id del usuario
     type: mongoose.Schema.Types.ObjectId,
     // aqui se hace una referencia al modelo de datos de los usuarios en donde se obtendrá el id del usuario
     ref: "user"
