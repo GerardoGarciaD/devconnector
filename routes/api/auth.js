@@ -71,14 +71,14 @@ router.post(
           .json({ errors: [{ msg: "Invalid credentials" }] });
       }
 
-      //   Se obtiene el id del usuario recien registrado
+      //   Se obtiene el id del usuario logueado
       const payload = {
         user: {
           id: user.id
         }
       };
 
-      // Se utiliza la funcion.sign de jsonwebtoken, en donde se pasa el payload, que en este caso contiene el id del usuario recien registrado
+      // Se utiliza la funcion.sign de jsonwebtoken, en donde se pasa el payload, que en este caso contiene el id del usuario logueado
       jwt.sign(
         //   Se pasa el payload, la llave "secreta" y el tiempo en el que expira el token
         payload,
