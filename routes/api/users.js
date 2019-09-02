@@ -96,7 +96,7 @@ router.post(
         { expiresIn: 360000 },
 
         // Despues se realiza una callback function con lo que se regresa, que puede ser un error o el token
-        //   este token contiene la informacion encriptada y puede ser leeida en la pagina https://jwt.io/
+        //   este token contiene la informacion encriptada
         (err, token) => {
           if (err) throw err;
           res.json({ token });
