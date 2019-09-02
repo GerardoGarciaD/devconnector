@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { login } from "../../actions/auth";
+import { Redirect } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ login, isAuthenticated }) => {
+  //Estado del componente estado local
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -15,17 +20,22 @@ const Login = () => {
   // Esto es una funcion async por que dentro ocurren acciones y peticiones al servidor
   const onSubmit = async e => {
     e.preventDefault();
-    console.log("SUCCESS");
+    // Se llama la accion para iniciar sesion y se pasan los parametros
+    login(email, password);
   };
+
+  //Redireccionar si el usuario esta logueado
+  if (isAuthenticated) {
+    return <Redirect to="/dashboard"></Redirect>;
+  }
 
   return (
     <>
-      <div className="alert alert-danger">Invalid credentials</div>
       <h1 className="large text-primary">Sign In</h1>
       <p className="lead">
         <i className="fas fa-user"></i> Sign into Your Account
       </p>
-      <form className="form" action="dashboard.html">
+      <form className="form" onSubmit={e => onSubmit(e)}>
         <div className="form-group">
           <input
             type="email"
@@ -54,4 +64,16 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(
+  mapStateToProps,
+  { login }
+)(Login);
