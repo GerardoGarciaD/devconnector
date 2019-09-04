@@ -4,7 +4,10 @@ import {
   PROFILE_ERROR,
   GET_PROFILE,
   UPDATE_PROFILE,
-  ACCOUNT_DELETED
+  ACCOUNT_DELETED,
+  GET_PROFILES,
+  CLEAR_PROFILE,
+  GET_REPOS
 } from "./types";
 
 // Obtener el usuario actual/logueado
@@ -16,6 +19,68 @@ export const getCurrentProfile = () => async dispatch => {
 
     dispatch({
       type: GET_PROFILE,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+    // console.log(err);
+  }
+};
+
+// Obtener todos los perfiles
+export const getProfiles = () => async dispatch => {
+  dispatch({ type: CLEAR_PROFILE });
+
+  try {
+    // Se obtiene el perfil del usuario logueado llamando a la ruta del server
+    const res = await axios.get("/api/profile");
+    // console.log(res);
+
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+    console.log(err);
+  }
+};
+
+// Obtener perfil con id
+export const getProfileById = userId => async dispatch => {
+  try {
+    // Se obtiene el perfil del usuario logueado llamando a la ruta del server con el id dle usuario
+    const res = await axios.get(`/api/profile/user/${userId}`);
+    // console.log(res);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+    // console.log(err);
+  }
+};
+
+// Obtener repositorios de GitHub
+export const getGithubRepos = username => async dispatch => {
+  try {
+    // Se obtienen los repositorios del usuario con el nombre de usuario de github
+    const res = await axios.get(`/api/profile/github/${username}`);
+    // console.log(res);
+
+    dispatch({
+      type: GET_REPOS,
       payload: res.data
     });
   } catch (err) {
